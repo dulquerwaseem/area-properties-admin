@@ -1,6 +1,8 @@
-import { Building2, Plus } from "lucide-react";
+import { Building2, Plus, LogOut } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import Logo from "./Logo";
+import { supabase } from "../lib/supabase";
+import { useSession } from "../lib/useSession";
 import { GRADIENT } from "../lib/constants";
 
 const items = [
@@ -9,6 +11,10 @@ const items = [
 ];
 
 export default function Sidebar({ mobileOpen, setMobileOpen }) {
+  const session = useSession();
+  const email = session?.user?.email ?? "";
+  const initials = email ? email.slice(0, 2).toUpperCase() : "AD";
+
   return (
     <>
       {mobileOpen && (
@@ -32,11 +38,18 @@ export default function Sidebar({ mobileOpen, setMobileOpen }) {
           ))}
         </nav>
         <div className="p-4 border-t border-neutral-100 flex items-center gap-3">
-          <div className="w-9 h-9 rounded-full flex items-center justify-center text-white text-xs font-semibold shrink-0" style={{ background: GRADIENT }}>AR</div>
-          <div className="min-w-0">
-            <div className="text-sm font-medium text-neutral-900 truncate">Arjun Rao</div>
+          <div className="w-9 h-9 rounded-full flex items-center justify-center text-white text-xs font-semibold shrink-0" style={{ background: GRADIENT }}>{initials}</div>
+          <div className="min-w-0 flex-1">
+            <div className="text-sm font-medium text-neutral-900 truncate">{email || "Admin"}</div>
             <div className="text-xs text-neutral-400">Admin</div>
           </div>
+          <button
+            onClick={() => supabase.auth.signOut()}
+            title="Log out"
+            className="p-2 rounded-lg text-neutral-400 hover:text-neutral-900 hover:bg-neutral-100 shrink-0"
+          >
+            <LogOut className="w-4 h-4" />
+          </button>
         </div>
       </aside>
     </>

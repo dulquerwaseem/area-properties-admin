@@ -3,11 +3,13 @@ import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
 import { Menu } from "lucide-react";
 import Sidebar from "./components/Sidebar";
 import Logo from "./components/Logo";
+import RequireAuth from "./components/RequireAuth";
 import ListingsPage from "./pages/ListingsPage";
 import WizardPage from "./pages/WizardPage";
+import LoginPage from "./pages/Login";
 import { SF, MOCK_LISTINGS } from "./lib/constants";
 
-export default function App() {
+function AdminShell() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [listings, setListings] = useState(MOCK_LISTINGS);
   const navigate = useNavigate();
@@ -34,5 +36,21 @@ export default function App() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function App() {
+  return (
+    <Routes>
+      <Route path="/login" element={<LoginPage />} />
+      <Route
+        path="/*"
+        element={
+          <RequireAuth>
+            <AdminShell />
+          </RequireAuth>
+        }
+      />
+    </Routes>
   );
 }
